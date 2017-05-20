@@ -1,3 +1,7 @@
+
+"""This script scrapes the listings on the Hemnet Slutpris section for Stockholm and outputs a csv with a table with the following variables:
+adress, stadsdel, maklare, storlek, rum, avgift, datum, slutpris, pris_per_meter, percent_over, utgangs_pris"""
+
 import pandas as pd
 import requests
 import bs4 as bs
@@ -9,6 +13,43 @@ response = requests.get(url)
 code = response.text
 parsed = bs.BeautifulSoup(code, "html.parser")
 listings = parsed.findAll('div',{'class':'sold-property-listing'})
+
+#Find address
+def get_address(listings):
+    addresser = []
+    for entry in listings:
+    locations = entry.findAll('div', {'class':'sold-property-listing__location'})
+    for entry in locations:
+        str_entry = str(entry)
+        id_location = str_entry.find('item-link')
+        if id_location>=0:
+            start_location = id_location + 11
+            remaining = str_entry[start_location:]
+            end_location = remaining.find('<')
+            remaining = remaining[:end_location]
+        else:
+            remaining = 'Saknas'
+        addresser.append(remaining)
+        return addresser
+
+#Find neighborhood
+def get_stadsdel(listings):
+    stadsdelar = []
+    for entry in listings:
+    locations = entry.findAll('div', {'class':'sold-property-listing__location'})
+    for entry in locations:
+        str_entry = str(entry)
+        id_location = str_entry.find('<span class="item-link"') + 1
+        if id_location>0:
+            start_location = id_location + 25
+            remaining = str_entry[start_location:]
+            remaining = remaining.lstrip(' ')
+            end_location = str(remaining).find(',')
+            remaining = remaining[:end_location]
+        else:
+            remaining = 'Saknas'
+        stadsdelar.append(remaining)
+        return stadsdelar
 
 #Find final price
 def get_slutpris(listings):
