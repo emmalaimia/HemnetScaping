@@ -18,39 +18,57 @@ listings = parsed.findAll('div',{'class':'sold-property-listing'})
 def get_address(listings):
     addresser = []
     for entry in listings:
-    locations = entry.findAll('div', {'class':'sold-property-listing__location'})
-    for entry in locations:
-        str_entry = str(entry)
-        id_location = str_entry.find('item-link')
-        if id_location>=0:
-            start_location = id_location + 11
-            remaining = str_entry[start_location:]
-            end_location = remaining.find('<')
-            remaining = remaining[:end_location]
-        else:
-            remaining = 'Saknas'
-        addresser.append(remaining)
+        locations = entry.findAll('div', {'class':'sold-property-listing__location'})
+        for entry in locations:
+            str_entry = str(entry)
+            id_location = str_entry.find('item-link')
+            if id_location>=0:
+                start_location = id_location + 11
+                remaining = str_entry[start_location:]
+                end_location = remaining.find('<')
+                remaining = remaining[:end_location]
+            else:
+                remaining = 'Saknas'
+            addresser.append(remaining)
         return addresser
 
 #Find neighborhood
 def get_stadsdel(listings):
     stadsdelar = []
     for entry in listings:
-    locations = entry.findAll('div', {'class':'sold-property-listing__location'})
-    for entry in locations:
-        str_entry = str(entry)
-        id_location = str_entry.find('<span class="item-link"') + 1
-        if id_location>0:
-            start_location = id_location + 25
-            remaining = str_entry[start_location:]
-            remaining = remaining.lstrip(' ')
-            end_location = str(remaining).find(',')
-            remaining = remaining[:end_location]
-        else:
-            remaining = 'Saknas'
-        stadsdelar.append(remaining)
+        locations = entry.findAll('div', {'class':'sold-property-listing__location'})
+        for entry in locations:
+            str_entry = str(entry)
+            id_location = str_entry.find('<span class="item-link"') + 1
+            if id_location>0:
+                start_location = id_location + 25
+                remaining = str_entry[start_location:]
+                remaining = remaining.lstrip(' ')
+                end_location = str(remaining).find(',')
+                remaining = remaining[:end_location]
+            else:
+                remaining = 'Saknas'
+            stadsdelar.append(remaining)
         return stadsdelar
 
+#Find broker
+def get_maklare(listings):
+    brokers_list = []
+    for entry in listings:
+        brokers = entry.findAll('div', {'class':'sold-property-listing__broker'})
+        for entry in brokers:
+            str_entry = str(entry)
+            id_location = str_entry.find('sold_clicks')
+            if id_location>0:
+                remaining = str_entry[id_location:]
+                start_location = remaining.find('>') + 1
+                end_location = remaining.find('<')
+                remaining = remaining[start_location:end_location]
+            else:
+                remaining = 'Saknas'
+            brokers_list.append(remaining)
+    return brokers_list 
+      
 #Find final price
 def get_slutpris(listings):
     prices_extracted = []
