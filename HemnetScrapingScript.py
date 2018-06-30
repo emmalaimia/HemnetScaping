@@ -19,8 +19,8 @@ def get_address(listings):
     addresser = []
     for entry in listings:
         locations = entry.findAll('div', {'class':'sold-property-listing__location'})
-        for entry in locations:
-            str_entry = str(entry)
+        for e in locations:
+            str_entry = str(e)
             id_location = str_entry.find('item-link')
             if id_location>=0:
                 start_location = id_location + 11
@@ -91,7 +91,7 @@ def get_slutpris(listings):
                     in prices_to_clean]
     return clean_prices
     
-print(get_address(listings))
+#print(get_address(listings))
 #print(get_stadsdel(listings))
 #print(get_maklare(listings))
 #print(get_slutpris(listings))
