@@ -82,20 +82,29 @@ def get_slutpris(listings):
                 if len(price)>0:
                     prices_extracted.append(price)
     #Remove evertying in this part before Slutpris
-    prices_to_clean = []
-    for price in prices_extracted:
-        location = str(price).find('Slut')
-        price_short = str(price)[location:]
-        prices_to_clean.append(price_short)
-    #First remove //xa0 tags and then extract only the numbers in the remaining string
-    clean_prices = []
-    for price in prices_to_clean:
-        remove_loc = price.find('\\xa0')
-        while remove_loc>=0:
-            price = price[:remove_loc] + price[remove_loc+4:]
-            remove_loc = price.find('\\xa0')
-        price = filter(str.isdigit, price)
-        clean_prices.append(price)
+    prices_to_clean = [str(price)[str(price).find('Slut'):] 
+                        for price 
+                        in prices_extracted]
+    #Only keep the numeric part of the string
+    clean_prices = [int(''.join(c for c in i if c.isdigit())) 
+                    for i 
+                    in prices_to_clean]
     return clean_prices
     
-    
+print(get_address(listings))
+#print(get_stadsdel(listings))
+#print(get_maklare(listings))
+#print(get_slutpris(listings))
+
+#print(pd.DataFrame(
+#    {'Adress': get_address(listings),
+#     'Stadsdel': get_stadsdel(listings),
+#     'Maklare': get_maklare(listings),
+#     'Slutpris': get_slutpris(listings)
+#    }))
+
+
+
+
+
+  
